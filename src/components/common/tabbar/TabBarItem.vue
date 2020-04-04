@@ -19,7 +19,7 @@
       path: String,
       activeColor: {
         type: String,
-        default: '#e89abe'
+        default: '#ff8e40'
       }
     },
     methods: {
