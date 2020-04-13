@@ -53,8 +53,8 @@
   }
 
   .tabbar-item img{
-    width: 20px;
-    height: 20px;
+    width: 1.75rem;
+    height: 1.75rem;
     padding-top: 5px;
     padding-bottom: 2px;
     vertical-align: middle;

@@ -13,7 +13,7 @@
 <style scoped>
   #tabbar {
     display: flex;
-    /*background-color: #afffd7;*/
+    background-color: #fff;
     height: 49px;
     position: fixed;
     left: 0;

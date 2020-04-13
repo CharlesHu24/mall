@@ -1,5 +1,5 @@
 <template>
-  <tab-bar>
+  <tab-bar class="tab-bar">
     <!--把路径传给子组件-->
     <tab-bar-item path="/home">
       <img slot="item-icon" src="~assets/img/tabbar/home.svg" alt="">
@@ -37,5 +37,7 @@
 </script>
 
 <style scoped>
-
+  .tab-bar {
+    z-index: 9;
+  }
 </style>
