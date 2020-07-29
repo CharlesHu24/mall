@@ -1,8 +1,8 @@
 <template>
-  <div class="tabbar-item" @click="itemClick">
-    <div v-if="!isActive"><slot name="item-icon"></slot></div>
-    <div v-else><slot name="item-icon-active"></slot></div>
-    <div :style="activeStyle"><slot name="item-text"></slot></div>
+  <div class="tab-bar-item" @click="itemClick">
+    <div v-if="!isActive" class="item-icon"><slot name="item-icon"></slot></div>
+    <div v-else class="item-active-icon"><slot name="item-icon-active"></slot></div>
+    <div :style="activeStyle" class="item-text"><slot name="item-text"></slot></div>
   </div>
 </template>
 
@@ -46,17 +46,34 @@
 </script>
 
 <style scoped>
-  .tabbar-item {
+  .tab-bar-item {
     flex: 1;
     text-align: center;
     font-size: 14px;
   }
 
-  .tabbar-item img{
+  .tab-bar-item img{
     width: 1.75rem;
     height: 1.75rem;
     padding-top: 5px;
     padding-bottom: 2px;
     vertical-align: middle;
   }
+
+  /*.tab-bar-item {*/
+  /*  flex: 1;*/
+  /*}*/
+
+  /*.item-icon img, .item-active-icon img {*/
+  /*  width: 24px;*/
+  /*  height: 24px;*/
+  /*  margin-top: 5px;*/
+  /*  vertical-align: middle;*/
+  /*}*/
+
+  /*.item-text {*/
+  /*  font-size: 12px;*/
+  /*  margin-top: 3px;*/
+  /*  color: #333;*/
+  /*}*/
 </style>

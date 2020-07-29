@@ -1,25 +1,40 @@
 <template>
   <div id="home">
-    <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-    <home-swiper class="home-swiper" :banners="banners"></home-swiper>
-    <home-recommends-view :recommends="recommends"/>
-    <feature/>
-    <tab-control class="tab-control" :titles="['热卖', '新款', '精选']"/>
-    <goods-list :goods="goods['pop'].list"/>
+    <nav-bar class="nav-bar">
+      <div slot="center">购物街</div>
+    </nav-bar>
+    <tab-control :titles="['热卖', '新款', '精选']" @goodsClick="goodsClick" ref="tabControl1" :class="{fixed: isTabFixed}"/>
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentClick" :pull-up-load="true"
+            @loadMore="loadMore">
+      <home-swiper class="home-swiper" :banners="banners" @swiperImgLoad="swiperImgLoad"></home-swiper>
+      <home-recommends-view :recommends="recommends"/>
+      <feature/>
+      <!-- 接收tab-control传来的下标值 -->
+      <tab-control :titles="['热卖', '新款', '精选']" @goodsClick="goodsClick" ref="tabControl2"/>
+      <goods-list :goods="showGoods"/>
+    </scroll>
+
+    <!-- 通过.native属性给组件加事件 -->
+    <back-top @click.native="topClick" v-show="isShowBackTop"/>
 
   </div>
 </template>
 
 <script>
-  import HomeSwiper from './childCpns/HomeSwiper'
-  import HomeRecommendsView from "./childCpns/HomeRecommendsView";
-  import Feature from "./childCpns/Feature";
+  import HomeSwiper from './childComps/HomeSwiper'
+  import HomeRecommendsView from "./childComps/HomeRecommendsView";
+  import Feature from "./childComps/Feature";
 
   import NavBar from 'components/common/navbar/NavBar'
   import TabControl from "components/content/tabcontrol/TabControl";
   import GoodsList from "components/content/goods/GoodsList";
+  import Scroll from "components/common/scroll/Scroll";
+  import BackTop from "components/content/backTop/BackTop";
 
   import {getHomeMultidata, getHomeGoods} from "network/home";
+  import {debounce} from "common/utils";
+  import {itemListenerMixin} from "../../common/mixin";
+
 
   export default {
     name: "Home",
@@ -29,7 +44,9 @@
       Feature,
       NavBar,
       TabControl,
-      GoodsList
+      GoodsList,
+      Scroll,
+      BackTop
     },
     data() {
       return {
@@ -40,8 +57,35 @@
           'pop': {page: 0, list: []}, // 1: 30, 2: 60, 3: 90
           'new': {page: 0, list: []},
           'sell': {page: 0, list: []}
-        }
+        },
+        // 初始化列表展示
+        currentType: 'pop',
+        isShowBackTop: false,  // 控制 返回顶部按钮 显示/隐藏
+        tabOffsetTop: 0,
+        isTabFixed: false,  // 控制 tabControl 吸顶
+        saveY: 0,  // 保存当前位置
       }
+    },
+    computed: {
+      showGoods() {
+        return this.goods[this.currentType].list
+      }
+    },
+    activated() {
+      // 活跃时 访问离开时的Y值
+      this.$refs.scroll.scrollTo(0, this.saveY, 1) // 这里的第三个参数(时间) 不能给0 会出现bug
+      this.$refs.scroll.refresh() // 刷新一次
+    },
+    mixins: [itemListenerMixin],
+    deactivated() {
+      // 离开时保存当前位置Y值
+      this.saveY = this.$refs.scroll.getScrollY()
+
+      // 取消全局事件的监听
+      this.$bus.$off('itemImgLoad', this.itemImgListener)
+      console.log('Home页退出了');
+    },
+    mounted() {
     },
     created() {
       // 1.请求多个数据
@@ -53,6 +97,55 @@
       this.getHomeGoods('sell')
     },
     methods: {
+      /**
+       * 事件监听相关方法
+       */
+      topClick() {
+        // 面向这个组件中的scrollTo方法
+        this.$refs.scroll.scrollTo(0, 0)
+      },
+      goodsClick(index) {
+        // 根据下标改变数据类型
+        switch (index) {
+          case 0:
+            this.currentType = 'pop'
+            break
+          case 1:
+            this.currentType = 'new'
+            break
+          case 2:
+            this.currentType = 'sell'
+            break
+        }
+        // 让两个tabControl保持一致
+        this.$refs.tabControl1.currentIndex = index
+        this.$refs.tabControl2.currentIndex = index
+      },
+      contentClick(position) {
+        // 条件满足为true
+        // 1.判断BackTop是否显示
+        this.isShowBackTop = Math.abs(position.y) > 1200
+
+        // 2.决定tabControl是否吸顶(position: fixed)
+        this.isTabFixed = Math.abs(position.y) > this.tabOffsetTop
+      },
+      loadMore() {
+        // 上拉加载更多
+        this.getHomeGoods(this.currentType) // 当前选中的列表
+
+        // 完成上拉加载更多
+        this.$refs.scroll.finishPullUp()
+      },
+      swiperImgLoad() {
+        // 获取tabControl的offsetTop
+        // 所有的组件都有一个属性$el: 用于获取组件中的元素
+        this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop
+      },
+
+
+      /**
+       * 网络请求相关的方法
+       */
       getHomeMultidata() {
         getHomeMultidata().then(results => {
           // console.log(results);
@@ -64,11 +157,8 @@
         // 动态获取页面
         const page = this.goods[type].page + 1
         getHomeGoods(type, page).then(res => {
-          // console.log(res)
-          let goodsList = res.data.list
-          this.goods[type].list.push(...goodsList) // 把请求的数据保存下来
+          this.goods[type].list.push(...res.data.list) // 把请求的数据保存下来
           this.goods[type].page += 1 // 页码+1
-          console.log(res);
         })
       }
     }
@@ -76,24 +166,31 @@
 </script>
 
 <style scoped>
-  .home-nav {
+  #home {
+    height: 100vh;
+    position: relative;
+  }
+
+  .nav-bar {
     background-color: var(--color-tint);
     color: #fff;
+  }
+
+  .content {
+    overflow: hidden;
+    position: absolute;
+    background-color: #fff;
+    top: 43px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
+  }
+
+  .fixed {
     position: fixed;
-    z-index: 9;
-    width: 100%;
-  }
-
-  .home-swiper {
-    padding-top: 44px;
-  }
-
-  .tab-control {
-    /*
-      sticky属性： 当没有达到这个位置之前position:static,当达到这个值的时候position:fixed
-      但是很多浏览器不支持，一般移动端都支持
-    */
-    position: sticky;
+    left: 0;
+    right: 0;
     top: 44px;
   }
+
 </style>

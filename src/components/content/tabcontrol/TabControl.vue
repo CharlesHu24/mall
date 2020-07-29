@@ -26,6 +26,7 @@
     methods: {
       itemClick(index) {
         this.currentIndex = index
+        this.$emit('goodsClick', index)
       }
     }
   }
@@ -37,7 +38,7 @@
     z-index: 9;
     text-align: center;
     background-color: #fff;
-    height: 40px;
+    /*height: 40px;*/
     line-height: 40px;
     font-size: 15px;
   }
@@ -46,7 +47,7 @@
   }
 
   .tab-control-item span {
-    padding: 4px;
+    padding: 5px;
   }
 
   .active {

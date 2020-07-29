@@ -1,7 +1,7 @@
 <template>
   <!-- 使用每一项数据 -->
-  <div class="goods">
-    <img :src="goodsItem.show.img" alt="">
+  <div class="goods" @click="itemClick">
+    <img :src="showImg" alt="" @load="imgLoad">  <!-- @load 加载完成后 -->
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
@@ -20,6 +20,20 @@
         default() {
           return {}
         }
+      }
+    },
+    computed: {
+      showImg() {
+        return this.goodsItem.image || this.goodsItem.show.img
+      }
+    },
+    methods: {
+      imgLoad() {
+        // console.log('图片加载完成');
+        this.$bus.$emit('itemImgLoad')  // 通过原型发射事件 这就是事件总线
+      },
+      itemClick() {
+        this.$router.push('/detail/' + this.goodsItem.iid)
       }
     }
   }
