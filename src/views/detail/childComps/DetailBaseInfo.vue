@@ -38,6 +38,9 @@
   .base-info {
     padding: 15px 8px 0 8px;
     color: #999;
+    background-color: #fff;
+    margin-bottom: 12px;
+    border-radius: 0 0 10px 10px;
   }
 
   .info-title {

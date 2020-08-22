@@ -31,6 +31,7 @@
     methods: {
       itemClick(index) {
         this.currentIndex = index
+        this.$emit('item-index-click', index)
       },
       backClick() {
         this.$router.go(-1)

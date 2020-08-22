@@ -29,11 +29,10 @@
   import TabControl from "components/content/tabcontrol/TabControl";
   import GoodsList from "components/content/goods/GoodsList";
   import Scroll from "components/common/scroll/Scroll";
-  import BackTop from "components/content/backTop/BackTop";
+
 
   import {getHomeMultidata, getHomeGoods} from "network/home";
-  import {debounce} from "common/utils";
-  import {itemListenerMixin} from "../../common/mixin";
+  import {backTopMixin, itemListenerMixin} from "../../common/mixin";
 
 
   export default {
@@ -45,8 +44,7 @@
       NavBar,
       TabControl,
       GoodsList,
-      Scroll,
-      BackTop
+      Scroll
     },
     data() {
       return {
@@ -60,7 +58,6 @@
         },
         // 初始化列表展示
         currentType: 'pop',
-        isShowBackTop: false,  // 控制 返回顶部按钮 显示/隐藏
         tabOffsetTop: 0,
         isTabFixed: false,  // 控制 tabControl 吸顶
         saveY: 0,  // 保存当前位置
@@ -76,16 +73,14 @@
       this.$refs.scroll.scrollTo(0, this.saveY, 1) // 这里的第三个参数(时间) 不能给0 会出现bug
       this.$refs.scroll.refresh() // 刷新一次
     },
-    mixins: [itemListenerMixin],
+    mixins: [itemListenerMixin, backTopMixin],
     deactivated() {
       // 离开时保存当前位置Y值
       this.saveY = this.$refs.scroll.getScrollY()
 
       // 取消全局事件的监听
       this.$bus.$off('itemImgLoad', this.itemImgListener)
-      console.log('Home页退出了');
-    },
-    mounted() {
+      // console.log('Home页退出了');
     },
     created() {
       // 1.请求多个数据
@@ -100,10 +95,6 @@
       /**
        * 事件监听相关方法
        */
-      topClick() {
-        // 面向这个组件中的scrollTo方法
-        this.$refs.scroll.scrollTo(0, 0)
-      },
       goodsClick(index) {
         // 根据下标改变数据类型
         switch (index) {
@@ -122,9 +113,7 @@
         this.$refs.tabControl2.currentIndex = index
       },
       contentClick(position) {
-        // 条件满足为true
-        // 1.判断BackTop是否显示
-        this.isShowBackTop = Math.abs(position.y) > 1200
+        this.backTopShowListener(position)
 
         // 2.决定tabControl是否吸顶(position: fixed)
         this.isTabFixed = Math.abs(position.y) > this.tabOffsetTop
@@ -179,7 +168,7 @@
   .content {
     overflow: hidden;
     position: absolute;
-    background-color: #fff;
+    background-color: #f2f2f2;
     top: 43px;
     bottom: 49px;
     left: 0;
@@ -192,5 +181,4 @@
     right: 0;
     top: 44px;
   }
-
 </style>

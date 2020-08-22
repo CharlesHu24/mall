@@ -19,13 +19,16 @@ export function getRecommends() {
 export class Goods {
   constructor(itemInfo, columns, shopInfo) {
     this.title = itemInfo.title
+    this.desc = itemInfo.desc
     this.oldPrice = itemInfo.oldPrice
     this.price = itemInfo.price
     this.discountDesc = itemInfo.discountDesc
     this.discountBgColor = itemInfo.discountBgColor
     this.highNowPrice = itemInfo.highNowPrice
+    this.lowNowPrice = itemInfo.lowNowPrice
     this.columns = columns
     this.services = shopInfo.services
+    // this.link = itemInfo.link // ---------分割线------------
   }
 }
 

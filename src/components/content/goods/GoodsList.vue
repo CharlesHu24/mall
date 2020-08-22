@@ -30,6 +30,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
+    padding: 5px 0;
     margin-bottom: 50px;  /*暂时*/
   }
 </style>

@@ -1,8 +1,8 @@
 // 防抖函数
-export function debounce(func, delay) {
+export function debounce(func, delay=50) {
   let timer = null
   return (...args) => {
-    if(timer) clearTimeout(timer)
+    if (timer) clearTimeout(timer)
     timer = setTimeout(() => {
       func.apply(this, args)
     }, delay)
@@ -33,9 +33,10 @@ export function formatDate(date, fmt) {
   return fmt;
 }
 
-function padLeftZero (str) {
+function padLeftZero(str) {
   return ('00' + str).substr(str.length);
 }
+
 /**
  * 正则表达式 E
  */

@@ -30,6 +30,7 @@
     text-align: center;
     padding: 10px 0 20px;
     border-bottom: 8px solid #eee;
+    /*margin-bottom: 12px;*/
   }
 
   .recommend-item {
