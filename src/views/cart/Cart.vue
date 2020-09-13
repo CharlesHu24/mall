@@ -2,7 +2,7 @@
   <div class="cart">
     <nav-bar class="nav-bar">
       <div slot="center">购物车({{cartLength}})</div>  <!-- 当成计算属性使用 -->
-      <div slot="right" class="edit">编辑</div>
+      <div slot="right" class="edit" @click="editClick">{{text}}</div>
     </nav-bar>
 
     <!--  商品列表  -->
@@ -27,11 +27,29 @@
       CartList,
       CartBottomBar
     },
+    data() {
+      return {
+        text: '编辑商品'
+      }
+    },
     computed: {
       //使用对象展开运算符将 getter 混入 computed 对象中
       ...mapGetters([
         'cartLength'
       ])
+    },
+    methods: {
+      editClick() {
+        switch (this.text) {
+          case '完成':
+            this.text = '编辑商品'
+            break
+          case '编辑商品':
+            this.text = '完成'
+            break
+        }
+        this.$bus.$emit('editProduct', this.text)
+      }
     }
   }
 </script>
@@ -48,6 +66,6 @@
   }
 
   .edit {
-    font-size: 14px;
+    font-size: .75rem;
   }
 </style>

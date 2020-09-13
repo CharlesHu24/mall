@@ -21,4 +21,7 @@
 
 <style>
   @import './assets/css/base.css';
+  #app {
+    touch-action: none;
+  }
 </style>
