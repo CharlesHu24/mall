@@ -32,7 +32,7 @@
 
 
   import {getHomeMultidata, getHomeGoods} from "network/home";
-  import {backTopMixin, itemListenerMixin} from "../../common/mixin";
+  import {backTopMixin, itemListenerMixin} from "common/mixin";
 
 
   export default {
@@ -65,6 +65,7 @@
     },
     computed: {
       showGoods() {
+        console.log(this.goods[this.currentType].list);
         return this.goods[this.currentType].list
       }
     },
@@ -168,7 +169,7 @@
   .content {
     overflow: hidden;
     position: absolute;
-    background-color: #f2f2f2;
+    background-color: #fff;
     top: 43px;
     bottom: 49px;
     left: 0;

@@ -2,7 +2,7 @@
   <!-- 使用每一项数据 -->
   <div class="goods" @click="itemClick">
 <!--    <img :src="showImg" alt="" @load="imgLoad">  &lt;!&ndash; @load 加载完成后 &ndash;&gt;-->
-    <img v-lazy="showImg" alt="" @load="imgLoad">  <!-- @load 加载完成后 -->
+    <img v-lazy="showImg" :key="showImg" alt="" @load="imgLoad">  <!-- @load 加载完成后 -->
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>

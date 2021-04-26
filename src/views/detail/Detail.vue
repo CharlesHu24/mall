@@ -125,7 +125,7 @@
         // 1.获取顶部的图片轮播图数据
         const data = res.result
         this.topImages = data.itemInfo.topImages
-        // console.log(res);
+        console.log(res);
 
         // 2.获取商品数据
         this.goodsInfo = new Goods(data.itemInfo, data.columns, data.shopInfo)

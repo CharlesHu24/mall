@@ -58,7 +58,7 @@
         this.scroll && this.scroll.scrollTo(x, y, time)  // x轴, y轴
       },
       refresh() {
-        // console.log('刷新');
+        console.log('刷新refresh');
         this.scroll && this.scroll.refresh()
       },
       finishPullUp() {
